@@ -381,7 +381,7 @@ const App: React.FC = () => {
                 Real-time Service
               </span>
               <span className="text-sm font-bold tracking-wider">
-                WhatsApp 咨询/获取目录
+                WhatsApp Consultation / Catalogue
               </span>
             </div>
             <div className="bg-white/20 p-2 rounded-full">
