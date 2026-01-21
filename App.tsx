@@ -83,7 +83,7 @@ const App: React.FC = () => {
           <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl bg-stone-100 border border-stone-100">
             {/* 使用展示精品展厅效果的集合图片 */}
             <img 
-              src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=1000" 
+              src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=70&w=720" 
               alt="Curated Collection" 
               className="w-full h-full object-cover brightness-[0.85] contrast-[1.05]"
             />
