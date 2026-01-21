@@ -24,7 +24,7 @@ const CONTACT_CONFIG = {
   whatsapp: "https://wa.me/+8613427596902",
   instagram: "https://www.instagram.com/yuki_bagss",
   telegram: "https://t.me/+8613427596902",
-  catalog: "https://gooleta.com", 
+  catalog: "https://goolata.com", 
 };
 
 const SocialButton = ({ icon: Icon, label, color, href }: { icon: any, label: string, color: string, href: string }) => (
