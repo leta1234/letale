@@ -16,7 +16,12 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// --- 配置 ---
+/**
+ * =========================
+ * 1) 联系方式配置（所有跳转链接集中管理）
+ *    - 方便你以后只改这里，不用到处找
+ * =========================
+ */
 const CONTACT_CONFIG = {
   whatsapp: "https://wa.me/+8613427596902",
   instagram: "https://www.instagram.com/yuki_bagss",
@@ -24,23 +29,41 @@ const CONTACT_CONFIG = {
   catalog: "https://goolata.com",
 };
 
-// ✅ Pixel 事件：只在点击时触发（不影响首屏速度）
+/**
+ * =========================
+ * 2) Pixel 事件上报工具
+ *    - track：标准事件（Meta内置事件名）
+ *    - trackCustom：自定义事件（你要的 InstagramClick）
+ *    - 放这里的好处：所有点击统计统一入口，后期好维护
+ *    - try/catch + 可选链：fbq没加载完也不会报错
+ * =========================
+ */
+
+// 你要用的标准事件：Contact / ViewContent / Lead
 type PixelEvent = "Contact" | "ViewContent" | "Lead";
+
+/** 标准事件：用于广告优化（更常用、更稳） */
 const track = (event: PixelEvent) => {
   try {
-    // @ts-ignore
+    // @ts-ignore - fbq 是 Pixel 注入到 window 的全局函数
     window.fbq?.("track", event);
   } catch {}
 };
 
-// ✅ 如果你想把 Instagram 单独区分出来（可选）
-// const trackCustom = (eventName: string) => {
-//   try {
-//     // @ts-ignore
-//     window.fbq?.("trackCustom", eventName);
-//   } catch {}
-// };
+/** 自定义事件：用于单独统计 Instagram 点击 */
+const trackCustom = (eventName: string) => {
+  try {
+    // @ts-ignore
+    window.fbq?.("trackCustom", eventName);
+  } catch {}
+};
 
+/**
+ * =========================
+ * 3) SocialButton 组件（四个社交按钮用同一个组件）
+ *    - onClick 是可选的：有些按钮需要统计，有些不统计
+ * =========================
+ */
 const SocialButton = ({
   icon: Icon,
   label,
@@ -58,9 +81,9 @@ const SocialButton = ({
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    onClick={onClick}
-    whileHover={{ y: -5 }}
-    whileTap={{ scale: 0.95 }}
+    onClick={onClick} // ✅ 点击时触发 Pixel（如果传了 onClick）
+    whileHover={{ y: -5 }} // ✅ 悬停动效（不影响 Pixel）
+    whileTap={{ scale: 0.95 }} // ✅ 点击动效
     className="flex flex-col items-center gap-2 group"
   >
     <div
@@ -68,6 +91,7 @@ const SocialButton = ({
     >
       <Icon size={24} />
     </div>
+
     <span className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">
       {label}
     </span>
@@ -75,15 +99,25 @@ const SocialButton = ({
 );
 
 const App: React.FC = () => {
+  /**
+   * =========================
+   * 4) 弹窗显示状态
+   *    - true：显示入场弹窗
+   *    - false：隐藏弹窗，进入主页内容
+   * =========================
+   */
   const [showWelcome, setShowWelcome] = useState(true);
 
   return (
     <div className="min-h-screen bg-[#FDFCFB] text-stone-900 font-sans selection:bg-nobel-gold/20 flex justify-center">
       <div className="w-full max-w-md bg-white relative shadow-2xl flex flex-col min-h-screen border-x border-stone-100 overflow-hidden">
-        {/* 页头 */}
+
+        {/* =========================
+            5) 页头（品牌展示区）
+           ========================= */}
         <header className="py-10 px-6 flex flex-col items-center border-b border-stone-50">
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -10 }} // ✅ 入场动画
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
@@ -100,7 +134,9 @@ const App: React.FC = () => {
           </motion.div>
         </header>
 
-        {/* 信任版块 */}
+        {/* =========================
+            6) 信任版块（展示服务优势）
+           ========================= */}
         <section className="px-6 py-4 flex justify-around bg-stone-50/50">
           <div className="flex flex-col items-center gap-1">
             <Layers size={14} className="text-nobel-gold" />
@@ -108,12 +144,14 @@ const App: React.FC = () => {
               Global Stock
             </span>
           </div>
+
           <div className="flex flex-col items-center gap-1">
             <ShieldAlert size={14} className="text-nobel-gold" />
             <span className="text-[8px] font-bold text-stone-400 uppercase tracking-widest">
               Bespoke Precision
             </span>
           </div>
+
           <div className="flex flex-col items-center gap-1">
             <CheckCircle2 size={14} className="text-nobel-gold" />
             <span className="text-[8px] font-bold text-stone-400 uppercase tracking-widest">
@@ -122,7 +160,11 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* 主图 */}
+        {/* =========================
+            7) 核心视觉主图（首屏大图）
+            - loading="eager"：首屏尽快加载
+            - decoding="async"：异步解码减少卡顿
+           ========================= */}
         <section className="px-4 py-6">
           <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl bg-stone-100 border border-stone-100">
             <img
@@ -131,10 +173,14 @@ const App: React.FC = () => {
               className="w-full h-full object-cover brightness-[0.85] contrast-[1.05]"
               loading="eager"
               decoding="async"
-              // @ts-ignore
+              // @ts-ignore - 浏览器支持 fetchpriority；TS 可能没有这个属性类型
               fetchpriority="high"
             />
+
+            {/* 主图上的渐变遮罩：提升文字可读性 */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+
+            {/* 主图上的文案区 */}
             <div className="absolute bottom-8 left-8 right-8">
               <div className="flex items-center gap-2 mb-3">
                 <span className="h-[1px] w-6 bg-nobel-gold"></span>
@@ -142,9 +188,11 @@ const App: React.FC = () => {
                   Season Archive 2024
                 </span>
               </div>
+
               <p className="text-white font-serif text-2xl italic tracking-tight leading-tight">
                 An exhaustive collection of artisan-grade masterpieces.
               </p>
+
               <p className="text-stone-400 text-[10px] mt-4 uppercase tracking-[0.15em] font-medium leading-relaxed">
                 Source directly from the world's most sophisticated leather workshops.
               </p>
@@ -152,16 +200,20 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* 目录卡片：✅ 事件 ViewContent */}
+        {/* =========================
+            8) 目录入口卡片（重要转化点）
+            ✅ 点击触发：track("ViewContent")
+           ========================= */}
         <section className="px-4 py-2">
           <motion.a
             href={CONTACT_CONFIG.catalog}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => track("ViewContent")}
+            onClick={() => track("ViewContent")} // ✅ 目录点击事件（标准事件）
             whileHover={{ scale: 1.01 }}
             className="block relative w-full rounded-[2.5rem] overflow-hidden bg-stone-950 shadow-[0_20px_40px_rgba(0,0,0,0.3)] border border-stone-800"
           >
+            {/* 背景图片：懒加载，减少首屏压力 */}
             <div className="absolute inset-0 opacity-40 blur-md scale-110">
               <img
                 src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=65&w=640"
@@ -172,6 +224,7 @@ const App: React.FC = () => {
               />
             </div>
 
+            {/* 前景内容 */}
             <div className="relative p-10 flex flex-col items-center text-center">
               <div className="mb-6 relative">
                 <div className="w-16 h-16 rounded-full border border-nobel-gold/30 flex items-center justify-center animate-pulse">
@@ -200,13 +253,20 @@ const App: React.FC = () => {
           </motion.a>
         </section>
 
-        {/* 联系区：✅ WhatsApp=Contact ✅ Instagram=ViewContent(或自定义) */}
+        {/* =========================
+            9) 联系区（按钮区）
+            ✅ WhatsApp：Contact
+            ✅ Instagram：InstagramClick（自定义事件）
+            ✅ Archive：ViewContent
+            - Telegram：不统计（你没要求）
+           ========================= */}
         <section className="px-8 py-12 bg-stone-50 border-y border-stone-100">
           <h2 className="text-[10px] tracking-[0.5em] uppercase text-stone-400 font-black text-center mb-10 italic">
             Personal Concierge
           </h2>
 
           <div className="grid grid-cols-4 gap-4">
+            {/* WhatsApp 点击：用于你广告核心优化（Contact） */}
             <SocialButton
               icon={MessageCircle}
               label="WhatsApp"
@@ -215,6 +275,7 @@ const App: React.FC = () => {
               onClick={() => track("Contact")}
             />
 
+            {/* Telegram 不统计（你未要求，如果要也可加 trackCustom） */}
             <SocialButton
               icon={Send}
               label="Telegram"
@@ -222,16 +283,16 @@ const App: React.FC = () => {
               href={CONTACT_CONFIG.telegram}
             />
 
+            {/* Instagram 点击：自定义事件 InstagramClick */}
             <SocialButton
               icon={Instagram}
               label="Insta"
               color="bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]"
               href={CONTACT_CONFIG.instagram}
-              onClick={() => track("ViewContent")}
-              // 如果你想单独区分 Instagram：用下面这行替代上面那行
-              // onClick={() => trackCustom("InstagramClick")}
+              onClick={() => trackCustom("InstagramClick")}
             />
 
+            {/* 目录入口也可以在这里再做一次统计：ViewContent */}
             <SocialButton
               icon={ExternalLink}
               label="Archive"
@@ -242,7 +303,10 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* 细节介绍 */}
+        {/* =========================
+            10) 细节介绍（内容区）
+            - 仅展示文案，不做 Pixel
+           ========================= */}
         <section className="px-8 py-14 space-y-12">
           <div className="text-center">
             <h3 className="font-serif text-2xl text-stone-800 mb-4 italic">
@@ -284,7 +348,9 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* 页脚 */}
+        {/* =========================
+            11) 页脚（展示信息）
+           ========================= */}
         <footer className="px-8 pb-36 pt-12 text-center bg-stone-50">
           <p className="text-[9px] text-stone-300 leading-relaxed uppercase tracking-[0.4em] mb-4">
             International Supply • Artisan Network
@@ -296,13 +362,16 @@ const App: React.FC = () => {
           </div>
         </footer>
 
-        {/* 底部 WhatsApp：✅ 事件 Contact */}
+        {/* =========================
+            12) 底部 WhatsApp 固定按钮（最重要转化点）
+            ✅ 点击触发：track("Contact")
+           ========================= */}
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white via-white/90 to-transparent z-50 flex justify-center">
           <motion.a
             href={CONTACT_CONFIG.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => track("Contact")}
+            onClick={() => track("Contact")} // ✅ WhatsApp 转化事件
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className="w-full max-w-sm bg-[#25D366] text-white flex items-center justify-between pl-8 pr-3 py-4 rounded-full shadow-[0_20px_40px_rgba(37,211,102,0.3)]"
@@ -321,17 +390,20 @@ const App: React.FC = () => {
           </motion.a>
         </div>
 
-        {/* 入场弹窗：✅ 点击按钮触发 Lead */}
+        {/* =========================
+            13) 入场弹窗（次转化点）
+            ✅ 点击按钮触发：track("Lead")
+           ========================= */}
         <AnimatePresence>
           {showWelcome && (
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={{ opacity: 0 }} // ✅ 遮罩淡入
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-stone-950/90 backdrop-blur-sm z-[100] flex items-center justify-center p-8"
             >
               <motion.div
-                initial={{ scale: 0.9, y: 30 }}
+                initial={{ scale: 0.9, y: 30 }} // ✅ 弹窗弹入动画
                 animate={{ scale: 1, y: 0 }}
                 className="bg-white rounded-[3.5rem] p-12 shadow-2xl w-full max-w-xs text-center relative"
               >
@@ -350,8 +422,8 @@ const App: React.FC = () => {
 
                 <button
                   onClick={() => {
-                    track("Lead");
-                    setShowWelcome(false);
+                    track("Lead"); // ✅ 弹窗按钮点击：Lead（次转化）
+                    setShowWelcome(false); // ✅ 关闭弹窗
                   }}
                   className="w-full bg-stone-900 text-white text-[11px] font-black uppercase tracking-[0.4em] py-5 rounded-2xl shadow-2xl hover:bg-nobel-gold transition-all flex items-center justify-center gap-2 group"
                 >
