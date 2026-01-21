@@ -8,6 +8,14 @@
     />
     <title>Prestige Luxury | Global Concierge</title>
 
+    <!-- ================= 性能预连接（安全提速） ================= -->
+    <link rel="preconnect" href="https://connect.facebook.net" crossorigin />
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
+    <link rel="preconnect" href="https://aistudiocdn.com" crossorigin />
+    <link rel="preconnect" href="https://esm.sh" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <!-- ================= Meta / Facebook Pixel Code ================= -->
     <script>
       !(function (f, b, e, v, n, t, s) {
@@ -34,24 +42,22 @@
         "https://connect.facebook.net/en_US/fbevents.js"
       );
 
-      // ⚠️ 记得换成你真实的 Pixel ID
+      // ⚠️ 换成你真实的 Pixel ID
       fbq("init", "YOUR_PIXEL_ID");
       fbq("track", "PageView");
     </script>
     <!-- ================= End Meta Pixel Code ================= -->
 
-    <!-- Tailwind CDN -->
+    <!-- Tailwind CDN（当前阶段保留，安全） -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
-    <!-- Tailwind config -->
+    <!-- Tailwind runtime config（仅 CDN 模式使用） -->
     <script>
       tailwind.config = {
         theme: {
@@ -108,7 +114,7 @@
   <body>
     <div id="root"></div>
 
-    <!-- ✅ noscript 必须放在 body 中（Vite 要求） -->
+    <!-- noscript 必须在 body 中（Vite 合规 + Pixel 完整） -->
     <noscript>
       <img
         height="1"
