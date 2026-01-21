@@ -21,10 +21,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // --- 安全配置：完全移除任何可能引起误会的关键词 ---
 const CONTACT_CONFIG = {
-  whatsapp: "https://wa.me/YOUR_NUMBER?text=Hi!%20I'm%20requesting%20access%20to%20the%20Private%20Atelier%20Catalog.",
-  instagram: "https://www.instagram.com/YOUR_ID",
-  telegram: "https://t.me/YOUR_ID",
-  catalog: "https://yourcataloglink.com", 
+  whatsapp: "https://wa.me/+8613427596902",
+  instagram: "https://www.instagram.com/yuki_bagss",
+  telegram: "https://t.me/+8613427596902",
+  catalog: "https://gooleta.com", 
 };
 
 const SocialButton = ({ icon: Icon, label, color, href }: { icon: any, label: string, color: string, href: string }) => (
