@@ -112,7 +112,14 @@ const App: React.FC = () => {
             className="block relative w-full rounded-[2.5rem] overflow-hidden bg-stone-950 shadow-[0_20px_40px_rgba(0,0,0,0.3)] border border-stone-800"
           >
             <div className="absolute inset-0 opacity-40 blur-md scale-110">
-               <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" />
+               <img
+  src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=65&w=640"
+  className="w-full h-full object-cover"
+  alt=""
+  loading="lazy"
+  decoding="async"
+/>
+
             </div>
             
             <div className="relative p-10 flex flex-col items-center text-center">
