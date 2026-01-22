@@ -31,28 +31,28 @@ const CONTACT_CONFIG = {
 
 /**
  * =========================
- * 1.1) 合规页面链接配置（新增）
- *    - 你把 Google Docs / Google Sites 的链接粘贴到这里
- *    - Facebook 广告审核时，这些页面能打开 + 内容真实 = 很重要
+ * ✅ 合规页面链接（建议公开可访问）
+ * - 可以放 Google Docs / Google Sites / Notion（公开访问）
+ * - 注意：如果用 Google Docs，请设置为 “Anyone with the link can view”
  * =========================
  */
 const POLICY_LINKS = {
-  privacy: "https://docs.google.com/document/d/XXXX", // 👈 换成你的 Privacy Policy 链接
-  terms: "https://docs.google.com/document/d/XXXX", // 👈 换成你的 Terms of Service 链接
-  refund: "https://docs.google.com/document/d/XXXX", // 👈 换成你的 Refund/Return Policy 链接
-  contact: "https://docs.google.com/document/d/XXXX", // 👈 换成你的 Contact Us 链接
+  privacy: "https://docs.google.com/document/d/XXXX", // Privacy Policy
+  terms: "https://docs.google.com/document/d/XXXX", // Terms of Service
+  refund: "https://docs.google.com/document/d/XXXX", // Refund/Return Policy
+  contact: "https://docs.google.com/document/d/XXXX", // Contact Us
 };
 
 /**
  * =========================
- * 1.2) 真实联系方式（新增，必须有）
- *    - Contact Us 页面里建议也写同样的邮箱/地址
- *    - Facebook 更认可：真实邮箱 > 只留 WhatsApp
+ * ✅ 真实联系方式（非常重要）
+ * - Facebook 广告/审核更喜欢看到真实邮箱/地址
+ * - 邮箱请换成你真实可用的
  * =========================
  */
 const REAL_CONTACT = {
-  email: "support@yourdomain.com", // ✅ 必须换成你的真实邮箱（建议用你域名邮箱）
-  location: "New York, United States", // ✅ 可写城市+国家（不必精确门牌）
+  email: "support@yourdomain.com", // ⚠️ 换成你真实邮箱
+  location: "New York, United States", // 可写城市+国家
 };
 
 /**
@@ -60,7 +60,6 @@ const REAL_CONTACT = {
  * 2) Pixel 事件上报工具
  *    - track：标准事件（Meta内置事件名）
  *    - trackCustom：自定义事件（你要的 InstagramClick）
- *    - 放这里的好处：所有点击统计统一入口，后期好维护
  *    - try/catch + 可选链：fbq没加载完也不会报错
  * =========================
  */
@@ -87,7 +86,6 @@ const trackCustom = (eventName: string) => {
 /**
  * =========================
  * 3) SocialButton 组件（四个社交按钮用同一个组件）
- *    - onClick 是可选的：有些按钮需要统计，有些不统计
  * =========================
  */
 const SocialButton = ({
@@ -108,8 +106,8 @@ const SocialButton = ({
     target="_blank"
     rel="noopener noreferrer"
     onClick={onClick} // ✅ 点击时触发 Pixel（如果传了 onClick）
-    whileHover={{ y: -5 }} // ✅ 悬停动效（不影响 Pixel）
-    whileTap={{ scale: 0.95 }} // ✅ 点击动效
+    whileHover={{ y: -5 }}
+    whileTap={{ scale: 0.95 }}
     className="flex flex-col items-center gap-2 group"
   >
     <div
@@ -124,29 +122,10 @@ const SocialButton = ({
   </motion.a>
 );
 
-/**
- * =========================
- * 3.1) FooterLink 组件（新增）
- *    - 专门用于页脚的政策链接：统一样式、容易维护
- * =========================
- */
-const FooterLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="underline decoration-stone-300 underline-offset-4 hover:text-stone-700"
-  >
-    {children}
-  </a>
-);
-
 const App: React.FC = () => {
   /**
    * =========================
    * 4) 弹窗显示状态
-   *    - true：显示入场弹窗
-   *    - false：隐藏弹窗，进入主页内容
    * =========================
    */
   const [showWelcome, setShowWelcome] = useState(true);
@@ -159,7 +138,7 @@ const App: React.FC = () => {
            ========================= */}
         <header className="py-10 px-6 flex flex-col items-center border-b border-stone-50">
           <motion.div
-            initial={{ opacity: 0, y: -10 }} // ✅ 入场动画
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
@@ -232,7 +211,8 @@ const App: React.FC = () => {
               </p>
 
               <p className="text-stone-400 text-[10px] mt-4 uppercase tracking-[0.15em] font-medium leading-relaxed">
-                Source directly from the world's most sophisticated leather workshops.
+                Source directly from the world's most sophisticated leather
+                workshops.
               </p>
             </div>
           </div>
@@ -240,7 +220,6 @@ const App: React.FC = () => {
 
         {/* =========================
             8) 目录入口卡片（重要转化点）
-            ✅ 点击触发：track("ViewContent")
            ========================= */}
         <section className="px-4 py-2">
           <motion.a
@@ -318,7 +297,7 @@ const App: React.FC = () => {
               label="Insta"
               color="bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]"
               href={CONTACT_CONFIG.instagram}
-              onClick={() => trackCustom("InstagramClick")} // ✅ 后台显示为单独事件名
+              onClick={() => trackCustom("InstagramClick")}
             />
 
             <SocialButton
@@ -340,7 +319,8 @@ const App: React.FC = () => {
               Supply Chain Excellence
             </h3>
             <p className="text-stone-500 text-[13px] leading-relaxed italic">
-              Access the same raw materials and hardware used in historical boutique production, reconstructed with fidelity.
+              Access the same raw materials and hardware used in historical
+              boutique production, reconstructed with fidelity.
             </p>
           </div>
 
@@ -376,42 +356,112 @@ const App: React.FC = () => {
         </section>
 
         {/* =========================
-            11) 页脚（展示信息）
-            ✅ 这里新增：4个合规页面链接 + 真实邮箱/地址（关键）
+            ✅ 11) 页脚（已替换：含合规链接 + Contact）
            ========================= */}
         <footer className="px-8 pb-36 pt-12 text-center bg-stone-50">
+          {/* 你原来的两行保留 */}
           <p className="text-[9px] text-stone-300 leading-relaxed uppercase tracking-[0.4em] mb-4">
             International Supply • Artisan Network
           </p>
-
           <div className="flex flex-col items-center gap-1">
             <span className="text-[10px] font-serif italic text-stone-400 tracking-widest">
               EST. 2014 • PRIVATE ARCHIVE ACCESS
             </span>
           </div>
 
-          {/* ✅ 合规链接区（新增） */}
-          <div className="mt-8 text-[10px] text-stone-400 flex flex-col gap-2">
-            {/* 这些链接可以指向 Google Docs / Google Sites / Notion，能打开就有效 */}
-            <FooterLink href={POLICY_LINKS.privacy}>Privacy Policy</FooterLink>
-            <FooterLink href={POLICY_LINKS.terms}>Terms of Service</FooterLink>
-            <FooterLink href={POLICY_LINKS.refund}>Refund / Return Policy</FooterLink>
-            <FooterLink href={POLICY_LINKS.contact}>Contact Us</FooterLink>
+          {/* ====== 合规区域（方案 A：奢侈品风格）====== */}
+          <div className="mt-10">
+            {/* 标题：细金线 + 小标题 */}
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="h-[1px] w-10 bg-nobel-gold/60" />
+              <span className="text-[9px] uppercase tracking-[0.35em] font-black text-stone-400">
+                Policies & Support
+              </span>
+              <span className="h-[1px] w-10 bg-nobel-gold/60" />
+            </div>
 
-            {/* ✅ 真实联系方式（新增，Facebook 很看重） */}
-            <div className="mt-3 space-y-1">
-              <div>
-                <span className="uppercase tracking-widest text-stone-300">Email: </span>
-                <a
-                  href={`mailto:${REAL_CONTACT.email}`}
-                  className="underline decoration-stone-300 underline-offset-4 hover:text-stone-700"
-                >
-                  {REAL_CONTACT.email}
-                </a>
+            {/* 2×2 按钮式链接（手机端更高级、更清晰） */}
+            <div className="grid grid-cols-2 gap-3">
+              <a
+                href={POLICY_LINKS.privacy}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-full border border-stone-200 bg-white/70 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 shadow-sm transition-all hover:border-nobel-gold/60 hover:text-stone-800 hover:shadow-md"
+              >
+                Privacy Policy
+                <span className="ml-2 text-stone-300 group-hover:text-nobel-gold">
+                  ›
+                </span>
+              </a>
+
+              <a
+                href={POLICY_LINKS.terms}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-full border border-stone-200 bg-white/70 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 shadow-sm transition-all hover:border-nobel-gold/60 hover:text-stone-800 hover:shadow-md"
+              >
+                Terms of Service
+                <span className="ml-2 text-stone-300 group-hover:text-nobel-gold">
+                  ›
+                </span>
+              </a>
+
+              <a
+                href={POLICY_LINKS.refund}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-full border border-stone-200 bg-white/70 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 shadow-sm transition-all hover:border-nobel-gold/60 hover:text-stone-800 hover:shadow-md"
+              >
+                Refund / Return
+                <span className="ml-2 text-stone-300 group-hover:text-nobel-gold">
+                  ›
+                </span>
+              </a>
+
+              <a
+                href={POLICY_LINKS.contact}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-full border border-stone-200 bg-white/70 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 shadow-sm transition-all hover:border-nobel-gold/60 hover:text-stone-800 hover:shadow-md"
+              >
+                Contact Us
+                <span className="ml-2 text-stone-300 group-hover:text-nobel-gold">
+                  ›
+                </span>
+              </a>
+            </div>
+
+            {/* Contact 信息卡片（真实邮箱/地区） */}
+            <div className="mt-6 rounded-2xl border border-stone-200 bg-white/70 px-5 py-4 text-left shadow-sm">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="h-[1px] w-5 bg-nobel-gold/60" />
+                <span className="text-[9px] uppercase tracking-[0.35em] font-black text-stone-400">
+                  Contact
+                </span>
               </div>
 
-              <div className="text-stone-300 uppercase tracking-widest">
-                Location: {REAL_CONTACT.location}
+              <div className="space-y-2 text-[10px] text-stone-500">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="uppercase tracking-[0.25em] text-stone-300 font-bold">
+                    Email
+                  </span>
+                  <a
+                    href={`mailto:${REAL_CONTACT.email}`}
+                    className="font-semibold text-stone-600 hover:text-stone-900 underline decoration-stone-300 underline-offset-4 truncate"
+                    title={REAL_CONTACT.email}
+                  >
+                    {REAL_CONTACT.email}
+                  </a>
+                </div>
+
+                <div className="flex items-center justify-between gap-4">
+                  <span className="uppercase tracking-[0.25em] text-stone-300 font-bold">
+                    Location
+                  </span>
+                  <span className="font-semibold text-stone-600">
+                    {REAL_CONTACT.location}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -480,7 +530,10 @@ const App: React.FC = () => {
                   }}
                   className="w-full bg-stone-900 text-white text-[11px] font-black uppercase tracking-[0.4em] py-5 rounded-2xl shadow-2xl hover:bg-nobel-gold transition-all flex items-center justify-center gap-2 group"
                 >
-                  <MousePointerClick size={16} className="group-hover:animate-bounce" />
+                  <MousePointerClick
+                    size={16}
+                    className="group-hover:animate-bounce"
+                  />
                   <span>Request Entry</span>
                 </button>
               </motion.div>
