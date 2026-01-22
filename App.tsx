@@ -31,35 +31,35 @@ const CONTACT_CONFIG = {
 
 /**
  * =========================
- * ✅ 合规页面链接（建议公开可访问）
- * - 可以放 Google Docs / Google Sites / Notion（公开访问）
- * - 注意：如果用 Google Docs，请设置为 “Anyone with the link can view”
+ * 2) 合规页链接（Policy / Contact）
+ *    - 建议用 Google Docs 或你自己的站内页面
+ *    - Google Docs 必须设置：Anyone with the link can view
  * =========================
  */
 const POLICY_LINKS = {
-  privacy: "https://docs.google.com/document/d/XXXX", // Privacy Policy
-  terms: "https://docs.google.com/document/d/XXXX", // Terms of Service
-  refund: "https://docs.google.com/document/d/XXXX", // Refund/Return Policy
-  contact: "https://docs.google.com/document/d/XXXX", // Contact Us
+  privacy: "https://docs.google.com/document/d/XXXXXXXXXXXXXXX/edit?usp=sharing",
+  terms: "https://docs.google.com/document/d/XXXXXXXXXXXXXXX/edit?usp=sharing",
+  refund: "https://docs.google.com/document/d/XXXXXXXXXXXXXXX/edit?usp=sharing",
+  contact: "https://docs.google.com/document/d/XXXXXXXXXXXXXXX/edit?usp=sharing",
 };
 
 /**
  * =========================
- * ✅ 真实联系方式（非常重要）
- * - Facebook 广告/审核更喜欢看到真实邮箱/地址
- * - 邮箱请换成你真实可用的
+ * 3) 真实联系信息（合规必须）
+ *    - Email 必须真实
+ *    - Location 建议写国家/州（不要写虚假地址）
  * =========================
  */
 const REAL_CONTACT = {
-  email: "support@yourdomain.com", // ⚠️ 换成你真实邮箱
-  location: "New York, United States", // 可写城市+国家
+  email: "support@yourdomain.com", // ✅ 改成你的真实邮箱（必须真实）
+  location: "United States", // ✅ 建议写真实地区（国家/州即可）
 };
 
 /**
  * =========================
- * 2) Pixel 事件上报工具
- *    - track：标准事件（Meta内置事件名）
- *    - trackCustom：自定义事件（你要的 InstagramClick）
+ * 4) Pixel 事件上报工具
+ *    - track：标准事件（Meta 内置事件名）
+ *    - trackCustom：自定义事件（你要的 InstagramClick / PolicyView）
  *    - try/catch + 可选链：fbq没加载完也不会报错
  * =========================
  */
@@ -75,7 +75,7 @@ const track = (event: PixelEvent) => {
   } catch {}
 };
 
-/** 自定义事件：用于单独统计 Instagram 点击 */
+/** 自定义事件：用于单独统计（如 InstagramClick / PolicyView） */
 const trackCustom = (eventName: string) => {
   try {
     // @ts-ignore
@@ -85,7 +85,8 @@ const trackCustom = (eventName: string) => {
 
 /**
  * =========================
- * 3) SocialButton 组件（四个社交按钮用同一个组件）
+ * 5) SocialButton 组件（四个社交按钮用同一个组件）
+ *    - onClick 是可选：有些按钮需要统计，有些不统计
  * =========================
  */
 const SocialButton = ({
@@ -106,8 +107,8 @@ const SocialButton = ({
     target="_blank"
     rel="noopener noreferrer"
     onClick={onClick} // ✅ 点击时触发 Pixel（如果传了 onClick）
-    whileHover={{ y: -5 }}
-    whileTap={{ scale: 0.95 }}
+    whileHover={{ y: -5 }} // ✅ 悬停动效（不影响 Pixel）
+    whileTap={{ scale: 0.95 }} // ✅ 点击动效
     className="flex flex-col items-center gap-2 group"
   >
     <div
@@ -125,7 +126,9 @@ const SocialButton = ({
 const App: React.FC = () => {
   /**
    * =========================
-   * 4) 弹窗显示状态
+   * 6) 弹窗显示状态
+   *    - true：显示入场弹窗
+   *    - false：隐藏弹窗，进入主页内容
    * =========================
    */
   const [showWelcome, setShowWelcome] = useState(true);
@@ -134,11 +137,11 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#FDFCFB] text-stone-900 font-sans selection:bg-nobel-gold/20 flex justify-center">
       <div className="w-full max-w-md bg-white relative shadow-2xl flex flex-col min-h-screen border-x border-stone-100 overflow-hidden">
         {/* =========================
-            5) 页头（品牌展示区）
+            7) 页头（品牌展示区）
            ========================= */}
         <header className="py-10 px-6 flex flex-col items-center border-b border-stone-50">
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -10 }} // ✅ 入场动画
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
@@ -156,7 +159,7 @@ const App: React.FC = () => {
         </header>
 
         {/* =========================
-            6) 信任版块（展示服务优势）
+            8) 信任版块（展示服务优势）
            ========================= */}
         <section className="px-6 py-4 flex justify-around bg-stone-50/50">
           <div className="flex flex-col items-center gap-1">
@@ -182,7 +185,9 @@ const App: React.FC = () => {
         </section>
 
         {/* =========================
-            7) 核心视觉主图（首屏大图）
+            9) 核心视觉主图（首屏大图）
+            - loading="eager"：首屏尽快加载
+            - decoding="async"：异步解码减少卡顿
            ========================= */}
         <section className="px-4 py-6">
           <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl bg-stone-100 border border-stone-100">
@@ -192,12 +197,14 @@ const App: React.FC = () => {
               className="w-full h-full object-cover brightness-[0.85] contrast-[1.05]"
               loading="eager"
               decoding="async"
-              // @ts-ignore
+              // @ts-ignore - 浏览器支持 fetchpriority；TS 可能没有这个属性类型
               fetchpriority="high"
             />
 
+            {/* 主图上的渐变遮罩：提升文字可读性 */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
+            {/* 主图上的文案区 */}
             <div className="absolute bottom-8 left-8 right-8">
               <div className="flex items-center gap-2 mb-3">
                 <span className="h-[1px] w-6 bg-nobel-gold"></span>
@@ -211,25 +218,26 @@ const App: React.FC = () => {
               </p>
 
               <p className="text-stone-400 text-[10px] mt-4 uppercase tracking-[0.15em] font-medium leading-relaxed">
-                Source directly from the world's most sophisticated leather
-                workshops.
+                Source directly from the world's most sophisticated leather workshops.
               </p>
             </div>
           </div>
         </section>
 
         {/* =========================
-            8) 目录入口卡片（重要转化点）
+            10) 目录入口卡片（重要转化点）
+            ✅ 点击触发：track("ViewContent")
            ========================= */}
         <section className="px-4 py-2">
           <motion.a
             href={CONTACT_CONFIG.catalog}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => track("ViewContent")}
+            onClick={() => track("ViewContent")} // ✅ 目录点击事件（标准事件）
             whileHover={{ scale: 1.01 }}
             className="block relative w-full rounded-[2.5rem] overflow-hidden bg-stone-950 shadow-[0_20px_40px_rgba(0,0,0,0.3)] border border-stone-800"
           >
+            {/* 背景图片：懒加载，减少首屏压力 */}
             <div className="absolute inset-0 opacity-40 blur-md scale-110">
               <img
                 src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=65&w=640"
@@ -240,6 +248,7 @@ const App: React.FC = () => {
               />
             </div>
 
+            {/* 前景内容 */}
             <div className="relative p-10 flex flex-col items-center text-center">
               <div className="mb-6 relative">
                 <div className="w-16 h-16 rounded-full border border-nobel-gold/30 flex items-center justify-center animate-pulse">
@@ -269,7 +278,11 @@ const App: React.FC = () => {
         </section>
 
         {/* =========================
-            9) 联系区（按钮区）
+            11) 联系区（按钮区）
+            ✅ WhatsApp：Contact
+            ✅ Instagram：InstagramClick（自定义事件，后台显示独立事件名）
+            ✅ Archive：ViewContent
+            - Telegram：不统计（你没要求）
            ========================= */}
         <section className="px-8 py-12 bg-stone-50 border-y border-stone-100">
           <h2 className="text-[10px] tracking-[0.5em] uppercase text-stone-400 font-black text-center mb-10 italic">
@@ -277,6 +290,7 @@ const App: React.FC = () => {
           </h2>
 
           <div className="grid grid-cols-4 gap-4">
+            {/* WhatsApp 点击：用于广告核心优化（Contact） */}
             <SocialButton
               icon={MessageCircle}
               label="WhatsApp"
@@ -285,6 +299,7 @@ const App: React.FC = () => {
               onClick={() => track("Contact")}
             />
 
+            {/* Telegram 不统计 */}
             <SocialButton
               icon={Send}
               label="Telegram"
@@ -292,6 +307,7 @@ const App: React.FC = () => {
               href={CONTACT_CONFIG.telegram}
             />
 
+            {/* Instagram：自定义事件 InstagramClick（你要求后台单独事件名） */}
             <SocialButton
               icon={Instagram}
               label="Insta"
@@ -300,6 +316,7 @@ const App: React.FC = () => {
               onClick={() => trackCustom("InstagramClick")}
             />
 
+            {/* Archive：ViewContent */}
             <SocialButton
               icon={ExternalLink}
               label="Archive"
@@ -311,7 +328,8 @@ const App: React.FC = () => {
         </section>
 
         {/* =========================
-            10) 细节介绍（内容区）
+            12) 细节介绍（内容区）
+            - 仅展示文案，不做 Pixel
            ========================= */}
         <section className="px-8 py-14 space-y-12">
           <div className="text-center">
@@ -319,8 +337,7 @@ const App: React.FC = () => {
               Supply Chain Excellence
             </h3>
             <p className="text-stone-500 text-[13px] leading-relaxed italic">
-              Access the same raw materials and hardware used in historical
-              boutique production, reconstructed with fidelity.
+              Access the same raw materials and hardware used in historical boutique production, reconstructed with fidelity.
             </p>
           </div>
 
@@ -356,126 +373,146 @@ const App: React.FC = () => {
         </section>
 
         {/* =========================
-            ✅ 11) 页脚（已替换：含合规链接 + Contact）
+            ✅ 13) 页脚（B 方案：奢侈品风格列表 Footer + 合规链接 + 真实 Contact）
+            ✅ 每个 policy 点击会打点：trackCustom("PolicyView_xxx")
            ========================= */}
-        <footer className="px-8 pb-36 pt-12 text-center bg-stone-50">
-          {/* 你原来的两行保留 */}
-          <p className="text-[9px] text-stone-300 leading-relaxed uppercase tracking-[0.4em] mb-4">
-            International Supply • Artisan Network
-          </p>
-          <div className="flex flex-col items-center gap-1">
+        <footer className="px-8 pb-36 pt-12 bg-stone-50">
+          {/* 顶部品牌小字（保留你原风格，但更精致） */}
+          <div className="text-center">
+            <p className="text-[9px] text-stone-300 leading-relaxed uppercase tracking-[0.4em] mb-3">
+              International Supply • Artisan Network
+            </p>
             <span className="text-[10px] font-serif italic text-stone-400 tracking-widest">
               EST. 2014 • PRIVATE ARCHIVE ACCESS
             </span>
           </div>
 
-          {/* ====== 合规区域（方案 A：奢侈品风格）====== */}
-          <div className="mt-10">
-            {/* 标题：细金线 + 小标题 */}
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <span className="h-[1px] w-10 bg-nobel-gold/60" />
-              <span className="text-[9px] uppercase tracking-[0.35em] font-black text-stone-400">
-                Policies & Support
+          {/* 分割线 */}
+          <div className="mt-8 h-px w-full bg-stone-200/80" />
+
+          {/* Policies 标题 */}
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <span className="h-[1px] w-10 bg-nobel-gold/60" />
+            <span className="text-[9px] uppercase tracking-[0.35em] font-black text-stone-400">
+              Policies
+            </span>
+            <span className="h-[1px] w-10 bg-nobel-gold/60" />
+          </div>
+
+          {/* 合规链接列表（B 方案核心：一行一个链接，更高级） */}
+          <div className="mt-6 rounded-2xl border border-stone-200 bg-white/70 shadow-sm overflow-hidden">
+            {/* Privacy */}
+            <a
+              href={POLICY_LINKS.privacy}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCustom("PolicyView_Privacy")}
+              className="group flex items-center justify-between px-5 py-4 text-[11px] font-black uppercase tracking-[0.18em] text-stone-600 hover:bg-white transition"
+            >
+              <span>Privacy Policy</span>
+              <span className="text-stone-300 group-hover:text-nobel-gold transition">
+                →
               </span>
-              <span className="h-[1px] w-10 bg-nobel-gold/60" />
+            </a>
+            <div className="h-px bg-stone-200/70" />
+
+            {/* Terms */}
+            <a
+              href={POLICY_LINKS.terms}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCustom("PolicyView_Terms")}
+              className="group flex items-center justify-between px-5 py-4 text-[11px] font-black uppercase tracking-[0.18em] text-stone-600 hover:bg-white transition"
+            >
+              <span>Terms of Service</span>
+              <span className="text-stone-300 group-hover:text-nobel-gold transition">
+                →
+              </span>
+            </a>
+            <div className="h-px bg-stone-200/70" />
+
+            {/* Refund */}
+            <a
+              href={POLICY_LINKS.refund}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCustom("PolicyView_Refund")}
+              className="group flex items-center justify-between px-5 py-4 text-[11px] font-black uppercase tracking-[0.18em] text-stone-600 hover:bg-white transition"
+            >
+              <span>Refund / Return Policy</span>
+              <span className="text-stone-300 group-hover:text-nobel-gold transition">
+                →
+              </span>
+            </a>
+            <div className="h-px bg-stone-200/70" />
+
+            {/* Contact */}
+            <a
+              href={POLICY_LINKS.contact}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCustom("PolicyView_Contact")}
+              className="group flex items-center justify-between px-5 py-4 text-[11px] font-black uppercase tracking-[0.18em] text-stone-600 hover:bg-white transition"
+            >
+              <span>Contact Us</span>
+              <span className="text-stone-300 group-hover:text-nobel-gold transition">
+                →
+              </span>
+            </a>
+          </div>
+
+          {/* 真实联系信息卡片（合规关键：必须有真实邮箱/地区） */}
+          <div className="mt-6 rounded-2xl border border-stone-200 bg-white/70 shadow-sm px-5 py-5">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="h-[1px] w-6 bg-nobel-gold/60" />
+              <span className="text-[9px] uppercase tracking-[0.35em] font-black text-stone-400">
+                Support
+              </span>
             </div>
 
-            {/* 2×2 按钮式链接（手机端更高级、更清晰） */}
-            <div className="grid grid-cols-2 gap-3">
-              <a
-                href={POLICY_LINKS.privacy}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-full border border-stone-200 bg-white/70 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 shadow-sm transition-all hover:border-nobel-gold/60 hover:text-stone-800 hover:shadow-md"
-              >
-                Privacy Policy
-                <span className="ml-2 text-stone-300 group-hover:text-nobel-gold">
-                  ›
+            <div className="space-y-3 text-[10px] text-stone-500">
+              {/* Email */}
+              <div className="flex items-center justify-between gap-4">
+                <span className="uppercase tracking-[0.25em] text-stone-300 font-bold">
+                  Email
                 </span>
-              </a>
-
-              <a
-                href={POLICY_LINKS.terms}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-full border border-stone-200 bg-white/70 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 shadow-sm transition-all hover:border-nobel-gold/60 hover:text-stone-800 hover:shadow-md"
-              >
-                Terms of Service
-                <span className="ml-2 text-stone-300 group-hover:text-nobel-gold">
-                  ›
-                </span>
-              </a>
-
-              <a
-                href={POLICY_LINKS.refund}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-full border border-stone-200 bg-white/70 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 shadow-sm transition-all hover:border-nobel-gold/60 hover:text-stone-800 hover:shadow-md"
-              >
-                Refund / Return
-                <span className="ml-2 text-stone-300 group-hover:text-nobel-gold">
-                  ›
-                </span>
-              </a>
-
-              <a
-                href={POLICY_LINKS.contact}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-full border border-stone-200 bg-white/70 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-stone-500 shadow-sm transition-all hover:border-nobel-gold/60 hover:text-stone-800 hover:shadow-md"
-              >
-                Contact Us
-                <span className="ml-2 text-stone-300 group-hover:text-nobel-gold">
-                  ›
-                </span>
-              </a>
-            </div>
-
-            {/* Contact 信息卡片（真实邮箱/地区） */}
-            <div className="mt-6 rounded-2xl border border-stone-200 bg-white/70 px-5 py-4 text-left shadow-sm">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="h-[1px] w-5 bg-nobel-gold/60" />
-                <span className="text-[9px] uppercase tracking-[0.35em] font-black text-stone-400">
-                  Contact
-                </span>
+                <a
+                  href={`mailto:${REAL_CONTACT.email}`}
+                  className="font-semibold text-stone-700 hover:text-stone-900 underline decoration-stone-300 underline-offset-4 truncate"
+                  title={REAL_CONTACT.email}
+                >
+                  {REAL_CONTACT.email}
+                </a>
               </div>
 
-              <div className="space-y-2 text-[10px] text-stone-500">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="uppercase tracking-[0.25em] text-stone-300 font-bold">
-                    Email
-                  </span>
-                  <a
-                    href={`mailto:${REAL_CONTACT.email}`}
-                    className="font-semibold text-stone-600 hover:text-stone-900 underline decoration-stone-300 underline-offset-4 truncate"
-                    title={REAL_CONTACT.email}
-                  >
-                    {REAL_CONTACT.email}
-                  </a>
-                </div>
-
-                <div className="flex items-center justify-between gap-4">
-                  <span className="uppercase tracking-[0.25em] text-stone-300 font-bold">
-                    Location
-                  </span>
-                  <span className="font-semibold text-stone-600">
-                    {REAL_CONTACT.location}
-                  </span>
-                </div>
+              {/* Location */}
+              <div className="flex items-center justify-between gap-4">
+                <span className="uppercase tracking-[0.25em] text-stone-300 font-bold">
+                  Location
+                </span>
+                <span className="font-semibold text-stone-700">
+                  {REAL_CONTACT.location}
+                </span>
               </div>
             </div>
           </div>
+
+          {/* 底部版权 */}
+          <p className="mt-8 text-center text-[9px] text-stone-300 uppercase tracking-[0.35em]">
+            © {new Date().getFullYear()} Prestige • All Rights Reserved
+          </p>
         </footer>
 
         {/* =========================
-            12) 底部 WhatsApp 固定按钮（最重要转化点）
+            14) 底部 WhatsApp 固定按钮（最重要转化点）
+            ✅ 点击触发：track("Contact")
            ========================= */}
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white via-white/90 to-transparent z-50 flex justify-center">
           <motion.a
             href={CONTACT_CONFIG.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => track("Contact")}
+            onClick={() => track("Contact")} // ✅ WhatsApp 转化事件
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className="w-full max-w-sm bg-[#25D366] text-white flex items-center justify-between pl-8 pr-3 py-4 rounded-full shadow-[0_20px_40px_rgba(37,211,102,0.3)]"
@@ -495,18 +532,19 @@ const App: React.FC = () => {
         </div>
 
         {/* =========================
-            13) 入场弹窗（次转化点）
+            15) 入场弹窗（次转化点）
+            ✅ 点击按钮触发：track("Lead")
            ========================= */}
         <AnimatePresence>
           {showWelcome && (
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={{ opacity: 0 }} // ✅ 遮罩淡入
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-stone-950/90 backdrop-blur-sm z-[100] flex items-center justify-center p-8"
             >
               <motion.div
-                initial={{ scale: 0.9, y: 30 }}
+                initial={{ scale: 0.9, y: 30 }} // ✅ 弹窗弹入动画
                 animate={{ scale: 1, y: 0 }}
                 className="bg-white rounded-[3.5rem] p-12 shadow-2xl w-full max-w-xs text-center relative"
               >
@@ -525,8 +563,8 @@ const App: React.FC = () => {
 
                 <button
                   onClick={() => {
-                    track("Lead");
-                    setShowWelcome(false);
+                    track("Lead"); // ✅ 弹窗按钮点击：Lead（次转化）
+                    setShowWelcome(false); // ✅ 关闭弹窗
                   }}
                   className="w-full bg-stone-900 text-white text-[11px] font-black uppercase tracking-[0.4em] py-5 rounded-2xl shadow-2xl hover:bg-nobel-gold transition-all flex items-center justify-center gap-2 group"
                 >
