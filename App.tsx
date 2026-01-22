@@ -372,136 +372,58 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* =========================
-            ✅ 13) 页脚（B 方案：奢侈品风格列表 Footer + 合规链接 + 真实 Contact）
-            ✅ 每个 policy 点击会打点：trackCustom("PolicyView_xxx")
-           ========================= */}
-        <footer className="px-8 pb-36 pt-12 bg-stone-50">
-          {/* 顶部品牌小字（保留你原风格，但更精致） */}
-          <div className="text-center">
-            <p className="text-[9px] text-stone-300 leading-relaxed uppercase tracking-[0.4em] mb-3">
-              International Supply • Artisan Network
-            </p>
-            <span className="text-[10px] font-serif italic text-stone-400 tracking-widest">
-              EST. 2014 • PRIVATE ARCHIVE ACCESS
-            </span>
-          </div>
+       {/* =========================
+    11) 页脚 Footer（合并去重 + 增加政策链接）
+   ========================= */}
+<footer className="px-8 pb-32 pt-10 text-center bg-stone-50 border-t border-stone-100">
+  {/* 品牌宣言（保留一行即可，避免重复） */}
+  <p className="text-[9px] text-stone-400 leading-relaxed uppercase tracking-[0.35em]">
+    International Supply • Artisan Network • EST. 2014
+  </p>
 
-          {/* 分割线 */}
-          <div className="mt-8 h-px w-full bg-stone-200/80" />
+  {/* 政策链接（建议必须有） */}
+  <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px]">
+    <a
+      href="https://YOUR_PRIVACY_POLICY_LINK"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-stone-500 hover:text-stone-900 underline underline-offset-4 decoration-stone-300"
+    >
+      Privacy Policy
+    </a>
+    <span className="text-stone-300">•</span>
+    <a
+      href="https://YOUR_TERMS_LINK"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-stone-500 hover:text-stone-900 underline underline-offset-4 decoration-stone-300"
+    >
+      Terms of Service
+    </a>
+    <span className="text-stone-300">•</span>
+    <a
+      href="https://YOUR_REFUND_LINK"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-stone-500 hover:text-stone-900 underline underline-offset-4 decoration-stone-300"
+    >
+      Refund / Return
+    </a>
+    <span className="text-stone-300">•</span>
+    <a
+      href="mailto:YOUR_REAL_EMAIL@example.com"
+      className="text-stone-500 hover:text-stone-900 underline underline-offset-4 decoration-stone-300"
+    >
+      Contact Us
+    </a>
+  </div>
 
-          {/* Policies 标题 */}
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <span className="h-[1px] w-10 bg-nobel-gold/60" />
-            <span className="text-[9px] uppercase tracking-[0.35em] font-black text-stone-400">
-              Policies
-            </span>
-            <span className="h-[1px] w-10 bg-nobel-gold/60" />
-          </div>
+  {/* 版权声明（放最后一行即可） */}
+  <p className="mt-6 text-[9px] text-stone-300 uppercase tracking-[0.35em]">
+    © {new Date().getFullYear()} PRESTIGE • All Rights Reserved
+  </p>
+</footer>
 
-          {/* 合规链接列表（B 方案核心：一行一个链接，更高级） */}
-          <div className="mt-6 rounded-2xl border border-stone-200 bg-white/70 shadow-sm overflow-hidden">
-            {/* Privacy */}
-            <a
-              href={POLICY_LINKS.privacy}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackCustom("PolicyView_Privacy")}
-              className="group flex items-center justify-between px-5 py-4 text-[11px] font-black uppercase tracking-[0.18em] text-stone-600 hover:bg-white transition"
-            >
-              <span>Privacy Policy</span>
-              <span className="text-stone-300 group-hover:text-nobel-gold transition">
-                →
-              </span>
-            </a>
-            <div className="h-px bg-stone-200/70" />
-
-            {/* Terms */}
-            <a
-              href={POLICY_LINKS.terms}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackCustom("PolicyView_Terms")}
-              className="group flex items-center justify-between px-5 py-4 text-[11px] font-black uppercase tracking-[0.18em] text-stone-600 hover:bg-white transition"
-            >
-              <span>Terms of Service</span>
-              <span className="text-stone-300 group-hover:text-nobel-gold transition">
-                →
-              </span>
-            </a>
-            <div className="h-px bg-stone-200/70" />
-
-            {/* Refund */}
-            <a
-              href={POLICY_LINKS.refund}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackCustom("PolicyView_Refund")}
-              className="group flex items-center justify-between px-5 py-4 text-[11px] font-black uppercase tracking-[0.18em] text-stone-600 hover:bg-white transition"
-            >
-              <span>Refund / Return Policy</span>
-              <span className="text-stone-300 group-hover:text-nobel-gold transition">
-                →
-              </span>
-            </a>
-            <div className="h-px bg-stone-200/70" />
-
-            {/* Contact */}
-            <a
-              href={POLICY_LINKS.contact}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackCustom("PolicyView_Contact")}
-              className="group flex items-center justify-between px-5 py-4 text-[11px] font-black uppercase tracking-[0.18em] text-stone-600 hover:bg-white transition"
-            >
-              <span>Contact Us</span>
-              <span className="text-stone-300 group-hover:text-nobel-gold transition">
-                →
-              </span>
-            </a>
-          </div>
-
-          {/* 真实联系信息卡片（合规关键：必须有真实邮箱/地区） */}
-          <div className="mt-6 rounded-2xl border border-stone-200 bg-white/70 shadow-sm px-5 py-5">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="h-[1px] w-6 bg-nobel-gold/60" />
-              <span className="text-[9px] uppercase tracking-[0.35em] font-black text-stone-400">
-                Support
-              </span>
-            </div>
-
-            <div className="space-y-3 text-[10px] text-stone-500">
-              {/* Email */}
-              <div className="flex items-center justify-between gap-4">
-                <span className="uppercase tracking-[0.25em] text-stone-300 font-bold">
-                  Email
-                </span>
-                <a
-                  href={`mailto:${REAL_CONTACT.email}`}
-                  className="font-semibold text-stone-700 hover:text-stone-900 underline decoration-stone-300 underline-offset-4 truncate"
-                  title={REAL_CONTACT.email}
-                >
-                  {REAL_CONTACT.email}
-                </a>
-              </div>
-
-              {/* Location */}
-              <div className="flex items-center justify-between gap-4">
-                <span className="uppercase tracking-[0.25em] text-stone-300 font-bold">
-                  Location
-                </span>
-                <span className="font-semibold text-stone-700">
-                  {REAL_CONTACT.location}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* 底部版权 */}
-          <p className="mt-8 text-center text-[9px] text-stone-300 uppercase tracking-[0.35em]">
-            © {new Date().getFullYear()} Prestige • All Rights Reserved
-          </p>
-        </footer>
 
         {/* =========================
             14) 底部 WhatsApp 固定按钮（最重要转化点）
